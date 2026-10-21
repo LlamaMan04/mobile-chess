@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -42,8 +43,10 @@ private val Slate = Color(0xFF486581)
 private val Sand = Color(0xFFF4E9D8)
 private val Selection = Color(0xFF5B9A6B)
 
+// Root composable: owns whether the user is viewing the menu or an active game.
 @Composable
 fun ChessApp() {
+    // Compose remembers this value so navigating between recompositions does not reset the screen.
     var showingGame by remember { mutableStateOf(false) }
 
     Surface(
@@ -88,6 +91,7 @@ private fun MenuScreen(onStart: () -> Unit) {
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
         ) {
+            // Landing screen that introduces the game and starts a fresh local match.
             Column(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,9 +136,12 @@ private fun MenuScreen(onStart: () -> Unit) {
 
 @Composable
 private fun GameScreen(onBack: () -> Unit) {
+    // Game state is kept here because this screen owns the board interaction.
     var board by remember { mutableStateOf(initialBoard()) }
     var turn by remember { mutableStateOf(Side.WHITE) }
     var selected by remember { mutableStateOf<Square?>(null) }
+
+    // Legal destinations are recalculated whenever the selected square or board changes.
     val legalTargets = selected?.let { targetsFor(it, board) }.orEmpty()
 
     Column(
@@ -146,6 +153,7 @@ private fun GameScreen(onBack: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // Returning to the menu removes the current game screen from the composition.
             OutlinedButton(
                 onClick = onBack,
                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
@@ -181,6 +189,8 @@ private fun GameScreen(onBack: () -> Unit) {
         ) { square ->
             val piece = board[square.row][square.col]
 
+            // A tap either selects a current player's piece, completes a legal move,
+            // changes the selection, or clears an invalid selection.
             when {
                 selected == null && piece?.side == turn -> selected = square
                 selected != null && square in legalTargets -> {
@@ -188,6 +198,7 @@ private fun GameScreen(onBack: () -> Unit) {
                     selected = null
                     turn = if (turn == Side.WHITE) Side.BLACK else Side.WHITE
                 }
+
                 piece?.side == turn -> selected = square
                 else -> selected = null
             }
@@ -199,6 +210,7 @@ private fun GameScreen(onBack: () -> Unit) {
 
         OutlinedButton(
             onClick = {
+                // Reset all game state to the same values used at the start of a game.
                 board = initialBoard()
                 turn = Side.WHITE
                 selected = null
@@ -210,6 +222,7 @@ private fun GameScreen(onBack: () -> Unit) {
     }
 }
 
+// Displays a player's name and visually marks which player is currently active.
 @Composable
 private fun PlayerCard(
     name: String,

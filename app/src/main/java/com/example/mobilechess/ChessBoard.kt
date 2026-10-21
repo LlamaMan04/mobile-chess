@@ -24,6 +24,7 @@ private val BoardLight = Color(0xFFF0D9B5)
 private val BoardDark = Color(0xFFB58863)
 private val Selection = Color(0xFF5B9A6B)
 
+// Draws the complete 8x8 board and forwards each square tap to the game screen.
 @Composable
 fun ChessBoard(
     board: List<List<Piece?>>,
@@ -37,6 +38,7 @@ fun ChessBoard(
             .aspectRatio(1f)
             .clip(RoundedCornerShape(8.dp)),
     ) {
+        // Give every row and square equal space so the board remains square on any screen.
         repeat(8) { row ->
             Row(modifier = Modifier.weight(1f)) {
                 repeat(8) { col ->
@@ -54,6 +56,7 @@ fun ChessBoard(
     }
 }
 
+// Renders one board square, including its color, selection highlight, target marker, and piece.
 @Composable
 private fun BoardSquare(
     modifier: Modifier,
@@ -67,6 +70,7 @@ private fun BoardSquare(
     val selectedHere = square == selected
     val target = square in targets
 
+    // The square itself is clickable; the parent decides whether the tap selects or moves a piece.
     Box(
         modifier = modifier
             .fillMaxSize()

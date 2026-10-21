@@ -33,6 +33,7 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
+// Applies Material colors and typography to all composables inside the app.
 @Composable
 fun MobileChessTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -40,6 +41,7 @@ fun MobileChessTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    // Prefer Android's dynamic colors when supported; otherwise use the app's light/dark palette.
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

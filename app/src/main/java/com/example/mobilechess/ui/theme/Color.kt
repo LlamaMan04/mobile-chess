@@ -2,6 +2,7 @@ package com.example.mobilechess.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+// Light and dark Material color tokens generated for the Compose theme.
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
